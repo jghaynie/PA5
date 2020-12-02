@@ -308,7 +308,7 @@ namespace pleasework
                     case "E":
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Book Reports]");
-                        BooksReports();
+                        transactionsFile.ReportBook(myTransactions, transactionsFile, transactionsReports, transactionsUtility, myBooks, booksUtility, booksReports);
                         ContinueProgram();
                         return;
                     case "F":   

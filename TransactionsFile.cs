@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -355,6 +356,196 @@ namespace pleasework
 
             return myTransactions;
         }
-    }
 
+        public void ReportBook(Transactions[] myTransactions, TransactionsFile transactionsFile, TransactionsReports transactionsReports, TransactionsUtility transactionsUtility, Books[] myBooks, BooksUtility booksUtility, BooksReports booksReports)
+        {
+            
+            string userInput = "";
+
+            Console.WriteLine("(A) -- Total rentals by month and year");
+            Console.WriteLine("(B) -- Individual Customer Rentals");
+            Console.WriteLine("(C) -- Historical Customer Rentals");
+            Console.WriteLine("(D) -- Historical Genre Report");
+            Console.WriteLine("'Cancel' to Cancel");
+            
+            do {
+                Console.Write("-- ");
+                userInput = Console.ReadLine().ToUpper();
+
+                switch(userInput)
+                {
+                    case "A":
+                        TotalMonthYear(booksUtility, myBooks);
+                        break;
+                    case "B":
+                        IndividualRentals(booksUtility, myBooks);
+                        break;
+                    case "C":
+                        HistoricalRentals(booksUtility, myBooks);
+                        break;
+                    case "D":
+                        HistoricalGenre(booksUtility, myBooks);
+                        break;
+                    case "CANCEL":
+                        return;
+                    default:
+                        Console.WriteLine("Error: Not an option");
+                        break;
+                }
+
+            } while(userInput != "A" && userInput != "B" && userInput != "C" && userInput != "D");
+
+        }
+
+        private void IndividualRentals(BooksUtility booksUtility, Books[] myBooks)
+        {
+            string customerEmailInput = "";
+            int searchIndex = 0;
+
+            Console.WriteLine("Enter email address:");
+            Console.WriteLine("'Cancel' to Cancel");
+            Console.Write("-- ");
+            customerEmailInput = Console.ReadLine();
+
+            if (customerEmailInput.ToUpper() == "CANCEL")
+            {
+                return;
+            }
+            
+            Console.WriteLine();
+            Console.WriteLine("Individual Customer Rentals:");
+            string[] lines = File.ReadAllLines("transactions.txt");
+            if(lines.Length != 0)
+            {
+                foreach (string line in lines)
+                {
+                    string[] transactionInfo = line.Split('#');
+                    if(transactionInfo[3] == customerEmailInput)
+                    {
+                        searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(transactionInfo[1]));
+                        Console.WriteLine(myBooks[searchIndex]);
+                    }
+                }
+            }
+        }
+        private void HistoricalRentals(BooksUtility booksUtility, Books[] myBooks)
+        {
+            string customerEmailInput = "";
+            int searchIndex = 0;
+
+            Console.WriteLine("Enter email address:");
+            Console.WriteLine("'Cancel' to Cancel");
+            Console.Write("-- ");
+            customerEmailInput = Console.ReadLine();
+
+            if (customerEmailInput.ToUpper() == "CANCEL")
+            {
+                return;
+            }
+            
+            Console.WriteLine();
+            Console.WriteLine("Individual Customer Rentals:");
+            string[] lines = File.ReadAllLines("transactions.txt");
+            if(lines.Length != 0)
+            {
+                foreach (string line in lines)
+                {
+                    string[] transactionInfo = line.Split('#');
+                    if(transactionInfo[3] == customerEmailInput)
+                    {
+                        searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(transactionInfo[1]));
+                        Console.WriteLine(myBooks[searchIndex]);
+                    }
+                }
+            }
+        }
+        private void HistoricalGenre(BooksUtility booksUtility, Books[] myBooks)
+        {
+            string customerEmailInput = "";
+            int searchIndex = 0;
+
+            Console.WriteLine("Enter email address:");
+            Console.WriteLine("'Cancel' to Cancel");
+            Console.Write("-- ");
+            customerEmailInput = Console.ReadLine();
+
+            if (customerEmailInput.ToUpper() == "CANCEL")
+            {
+                return;
+            }
+            
+            Console.WriteLine();
+            Console.WriteLine("Individual Customer Rentals:");
+            string[] lines = File.ReadAllLines("transactions.txt");
+            if(lines.Length != 0)
+            {
+                foreach (string line in lines)
+                {
+                    string[] transactionInfo = line.Split('#');
+                    if(transactionInfo[3] == customerEmailInput)
+                    {
+                        searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(transactionInfo[1]));
+                        Console.WriteLine(myBooks[searchIndex]);
+                    }
+                }
+            }
+        }
+
+        class TotalRental
+        {
+            int[] months = new int[12];
+            string year;
+
+        }
+        private void TotalMonthYear(BooksUtility booksUtility, Books[] myBooks)
+        {
+            
+            Dictionary<string, int[]> years = new Dictionary<string, int[]>();
+
+            string[] lines = File.ReadAllLines("transactions.txt");
+            if(lines.Length != 0)
+            {
+                foreach (string line in lines)
+                {
+                    string[] transactionInfo = line.Split('#');
+                    string date = transactionInfo[5];
+                    if (date != "0/0/0000")
+                    {
+                        string year = date.Split('/')[2];
+                        int[] months;
+                        if (!years.ContainsKey(year))
+                        {
+                            months = new int[12];
+                            years[year] = months;
+                        }
+                        months = years[year];
+                        int month = int.Parse(date.Split('/')[0]);
+                        years[year][month] += 1;
+                    }
+                }
+            }
+            
+            Console.Clear();
+            Console.WriteLine("Total Rentals by Month and Year");
+            Console.WriteLine(new String('-', 100));
+            string[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+            Console.WriteLine("    \t"+String.Join('\t', monthNames));
+            Console.WriteLine(new String('-', 100));
+
+            foreach(var key in years)
+            {
+                string[] months = new string[12];
+                int index = 0;
+                foreach(var month in key.Value)
+                {
+                    months[index] = ($"{Convert.ToString(month):00}");
+                    index++;
+                }
+                Console.Write(key.Key);
+                Console.Write("\t");
+                Console.WriteLine(String.Join('\t', months));
+            }
+
+        }
+    }
 }
