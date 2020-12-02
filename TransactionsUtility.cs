@@ -12,7 +12,6 @@ namespace pleasework
         public TransactionsUtility(Transactions[] myTransactions)
         {
             this.myTransactions = myTransactions;
-            Console.WriteLine(myTransactions[0]);
         }
 
         public void SetMyTransactions(Transactions[] myTransactions)

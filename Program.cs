@@ -298,7 +298,6 @@ namespace pleasework
                     case "D":
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Book Returns]");
-                        Console.WriteLine(myTransactions[0]);
                         myTransactions = transactionsFile.ReturnBook(myTransactions, transactionsFile, transactionsReports, transactionsUtility, myBooks, booksUtility, booksReports);
                         transactionsUtility.SetMyTransactions(myTransactions);
                         transactionsReports.SetMyTransactions(myTransactions);

@@ -187,27 +187,14 @@ namespace pleasework
             return myTransactions;
         }
 
-        // return($"Rental ID: {rentalId}, ISBN: {isbn}, Customer Name: {customerName}, Customer Email: {customerEmail}, Rental Date: {rentalDate} Return Date: {returnDate}");
-
         public Transactions[] ReturnBook(Transactions[] myTransactions, TransactionsFile transactionsFile, TransactionsReports transactionsReports, TransactionsUtility transactionsUtility, Books[] myBooks, BooksUtility booksUtility, BooksReports booksReports)
         {
-            // TransactionsFile transactionsFile = new TransactionsFile("transactions.txt");
-            // // Transactions[] myTransactions = transactionsFile.GetAllTransactions();
-            // TransactionsReports transactionsReports = new TransactionsReports(myTransactions);
-            // TransactionsUtility transactionsUtility = new TransactionsUtility(myTransactions);
-
-            // BooksFile booksFile = new BooksFile("books.txt");
-            // Books[] myBooks = booksFile.GetAllBooks();
-            // BooksReports booksReports = new BooksReports(myBooks);
-            // BooksUtility booksUtility = new BooksUtility(myBooks);
-
             string customerEmailInput = "";
             string isbnInput = "";
             string confirmInput = "";
             int searchIndex = 0;
             int searchIndexTransaction = 0;
             int intTest = 0;
-            // int transactionFileLength = File.ReadAllLines("transactions.txt").Length;
             int transactionFileLength = myTransactions.Length;
             DateTime currentTime = DateTime.Today;
 
