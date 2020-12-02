@@ -4,3 +4,5 @@
 0004#3333333333#CustomerName1#customer1@gmail.com#11/29/2020#12/2/2020
 0005#4444444444#Jared Haynie#jghaynie@crimson.ua.edu#11/29/2020#12/2/2020
 0006#1111111111#FaustCustomer#FaustEmail#12/2/2020#0/0/0000
+0007#8888888888#Jared Haynie#jghaynie@crimson.ua.edu#12/2/2020#0/0/0000
+0008#8909876543#John George#jgk@gmail.com#12/2/2020#0/0/0000

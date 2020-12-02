@@ -22,10 +22,14 @@ namespace pleasework
 
         static void Main(string[] args)
         {
-           
-            // PopulateTestBooks();
-            // ResetBooks();
-            // PopulateTestTransactions();
+            // Sample methods I made to aid in my testing
+            // I included these as an extra
+                // PopulateTestBooks();
+                // ResetBooks();
+                // ResetTransactions();
+                // PopulateTestTransactions();
+
+            // calls the menu method, which leads to everything else
             MenuDisplay();
 
         }
@@ -178,7 +182,6 @@ namespace pleasework
                 }
                 Console.WriteLine("Transactions Added:");
                 Console.WriteLine($"{length} length");
-                // Console.WriteLine(myTransactions[length-1].ToString());
                 runProgram = false;
             }
             while (runProgram != false); 
@@ -266,6 +269,7 @@ namespace pleasework
             Console.WriteLine("(F) -- Exit");
             Console.WriteLine("Select an option to continue:");
 
+            // while loop to run through until valid selection is chosen, or program is exited
             do 
             {
                 Console.Write("-- ");
@@ -275,6 +279,7 @@ namespace pleasework
                     case "A":
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Add A Book]");
+                        // calls myBooks object from BooksFile to populate / update array
                         BooksFile.AddBook();
                         myBooks = booksFile.GetAllBooks();
                         ContinueProgram();
@@ -283,6 +288,7 @@ namespace pleasework
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Book Editor]");
                         myBooks = booksFile.GetAllBooks();
+                        // calls myBooks object and edit book method within object, as well as a way to update the arrays
                         BooksFile.EditBook();
                         myBooks = booksFile.GetAllBooks();
                         ContinueProgram();
@@ -291,6 +297,7 @@ namespace pleasework
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Book Rentals]");
                         myBooks = booksFile.GetAllBooks();
+                        // transactionFile object to help populate the transactions file with rental's
                         myTransactions = transactionsFile.GetAllTransactions();
                         transactionsFile.RentBook();
                         ContinueProgram();
@@ -298,25 +305,28 @@ namespace pleasework
                     case "D":
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Book Returns]");
+                        // the correct and proper way to do all of this using object references and defined methods within other object files
+                        // this method re-defines myTransactions via the transactionsFile object, and the return book method
                         myTransactions = transactionsFile.ReturnBook(myTransactions, transactionsFile, transactionsReports, transactionsUtility, myBooks, booksUtility, booksReports);
                         transactionsUtility.SetMyTransactions(myTransactions);
                         transactionsReports.SetMyTransactions(myTransactions);
-                        // myBooks = booksFile.GetAllBooks();
-                        // myTransactions = transactionsFile.GetAllTransactions();
                         ContinueProgram();
                         return;
                     case "E":
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Book Reports]");
+                        // this calls the reportbook method from the transactions file, and references all the relevant object instances
                         transactionsFile.ReportBook(myTransactions, transactionsFile, transactionsReports, transactionsUtility, myBooks, booksUtility, booksReports);
                         ContinueProgram();
                         return;
                     case "F":   
                         Console.Clear();
+                        // this exits the program and gives a goodbye
                         Console.WriteLine("Thank you, Goodbye!");
                         runProgram = false;
                         return;
                     default:
+                        // test case to ensure that the user input's a valid selection, and to let them know if they do not
                         Console.WriteLine($"Error: {userInput} is not a valid selection, Try Again");
                         runProgram = true;
                         break;
@@ -340,12 +350,15 @@ namespace pleasework
                 Console.Write("-- ");
                 userInput = Console.ReadLine();
 
+                // switch case to ensure a valid option is selected, runs through until this happens
                 switch(userInput.ToUpper())
                 {
                     case "A":
+                        // displays the menu
                         MenuDisplay();
                         return;
                     case "B":
+                        // exits the program
                         Console.WriteLine("Thank you, Goodbye!");
                         return;
                     default:
@@ -354,36 +367,6 @@ namespace pleasework
                 }
 
             } while (userInput != "A" && userInput != "B");
-        }
-        
-        static void BooksReports()
-        {
-            string userInput = "";
-
-            Console.WriteLine("(A) -- Print All Books");
-            Console.WriteLine("(B) -- Something Else");  
-            Console.WriteLine("'Cancel' to Cancel");
-            Console.WriteLine("Select an option:");
-
-            do {
-                Console.Write("-- ");
-                userInput = Console.ReadLine();
-                switch(userInput.ToUpper())
-                {
-                    case "A":
-                        myBooks = booksFile.GetAllBooks();
-                        for(int i=0; i<Books.GetCount(); i++)
-                        {
-                            Console.WriteLine(myBooks[i].ToString());
-                        }
-                        break;
-                    case "CANCEL":
-                        return;
-                    default:
-                        Console.WriteLine($"Error: {userInput} is not an option, Try Again");
-                        break;
-                }
-            } while (userInput.ToUpper() != "A" && userInput.ToUpper() != "CANCEL");
         }
     }
 }

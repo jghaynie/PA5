@@ -5,7 +5,9 @@ using System.Globalization;
 namespace pleasework
 {
     public class Books
-    {
+    {   
+
+        // variables being initialized
         private double isbn;
         private string title;
         private string author;
@@ -14,8 +16,11 @@ namespace pleasework
         private double copies;
         private static int count;
 
+
+        // Books object override or something
         public Books() {}
 
+        // BOOKS Object definition
         public Books(double isbn, string title, string author, string genre, double runTime, double copies)
         {
             this.isbn = isbn;
@@ -26,6 +31,7 @@ namespace pleasework
             this.copies = copies;
         }
 
+        // GETTERS AND SETTERS
         public void SetIsbn(double isbn)
         {
             this.isbn = isbn;
@@ -102,11 +108,14 @@ namespace pleasework
             count--;
         }
 
+        // method to print out specific/all details of a myBooks array with a particular index
         public override string ToString()
         {
              return ($"ISBN: {isbn}, Title: {title}, Author: {author}, Genre: {genre}, Run Time: {runTime}, Copies; {copies}");
         }
 
+        // the methods that are used in the BooksUtility object/class
+        // to compare any particular ISBN and use the Sequential Search
         public int CompareTo(Books value)
         {
              return (this.isbn.CompareTo(value.GetIsbn()));

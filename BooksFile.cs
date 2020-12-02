@@ -23,6 +23,8 @@ namespace pleasework
             return fileName;
         }
 
+        // this method just initializes the myBooks array, as well 
+        // as the starting book count
         public Books[] GetAllBooks()
         {
             Books[] myBooks = new Books[200];
@@ -38,6 +40,9 @@ namespace pleasework
             inFile.Close();
             return myBooks;
         }
+        
+        // this is the method that adds a new book, or just increases the copies
+        // count if it already exists
         public static Books[] AddBook()
         {
             BooksFile booksFile = new BooksFile("books.txt");
@@ -276,6 +281,11 @@ namespace pleasework
             } while(addBookInput.ToUpper() != "NO" && addBookInput.ToUpper() != "YES");
             return myBooks;
         }
+  
+        // the method that edits a book, this method prompts
+        // the user for a specific value to edit, and it allows
+        // them to enter in a new value. this includes error handling 
+        // as well as updating and re-reading the same original Books.TXT file. 
         public static Books[] EditBook()
         {
             BooksFile booksFile = new BooksFile("books.txt");

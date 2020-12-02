@@ -25,6 +25,8 @@ namespace pleasework
             return fileName;
         }
 
+        // this method just reads in all the transactions
+        // and gets the count
         public Transactions[] GetAllTransactions()
         {
             Transactions[] myTransactions = new Transactions[200];
@@ -41,6 +43,10 @@ namespace pleasework
             return myTransactions;
         }
         
+
+        // method to rent the book, returns myTransactions value
+        // this method recalls every object in itself multiple times
+        // which I have actually learned not to necessarily do
         public Transactions[] RentBook()
         {
             TransactionsFile transactionsFile = new TransactionsFile("transactions.txt");
@@ -155,19 +161,10 @@ namespace pleasework
             Console.WriteLine($"Rental ID: {rentalId:0000}");
             Console.WriteLine($"Title: {myBooks[searchIndex].GetTitle()}");
             Console.WriteLine($"Customer Name: {customerNameInput}");
+            Console.WriteLine($"Customer Email: {customerEmailInput}");
+            Console.WriteLine($"Rental Date: {currentDate:d}");
+            Console.WriteLine($"Return Date: {defaultReturnDate}");
             Console.WriteLine();
-
-            
-
-            // Console.Clear();
-            // Console.WriteLine("Checking out:");
-            // Console.WriteLine($"Rental ID: {rentalId:0000}");
-            // Console.WriteLine($"Title: {myBooks[searchIndex].GetTitle()}");
-            // Console.WriteLine($"Customer Name: {customerNameInput}");
-            // Console.WriteLine($"Customer Email: {customerEmailInput}");
-            // Console.WriteLine($"Rental Date: {currentDate:d}");
-            // Console.WriteLine($"Return Date: {defaultReturnDate}");
-            // Console.WriteLine();
 
             Console.WriteLine("'Confirm' to Change");
             Console.WriteLine("'Cancel' to Cancel Change");
@@ -214,6 +211,9 @@ namespace pleasework
             return myTransactions;
         }
 
+        // ReturnBook method which properly references and recalls objects
+        // this method also properly (or semi-properly) updates everything
+        // as well as returning to the main function, or Programs.cs
         public Transactions[] ReturnBook(Transactions[] myTransactions, TransactionsFile transactionsFile, TransactionsReports transactionsReports, TransactionsUtility transactionsUtility, Books[] myBooks, BooksUtility booksUtility, BooksReports booksReports)
         {
             string customerEmailInput = "";
@@ -366,6 +366,10 @@ namespace pleasework
             return myTransactions;
         }
 
+
+        // The function that contains the menu for the Reports function, that is also present in the main method
+        // this function was also one of the most successful, and one of my most proudest this project
+        // I believe I referenced everything correctly
         public void ReportBook(Transactions[] myTransactions, TransactionsFile transactionsFile, TransactionsReports transactionsReports, TransactionsUtility transactionsUtility, Books[] myBooks, BooksUtility booksUtility, BooksReports booksReports)
         {
             
@@ -406,6 +410,8 @@ namespace pleasework
 
         }
 
+       // This is the method that prints out all the individual rentals tied
+       // to a particular email 
         private void IndividualRentals(BooksUtility booksUtility, Books[] myBooks)
         {
             string customerEmailInput = "";
@@ -436,7 +442,54 @@ namespace pleasework
                     }
                 }
             }
+            Console.WriteLine();
+            Console.WriteLine("Would you like to print this information to a file?");
+            Console.WriteLine("'Yes' to Create New File");
+            Console.WriteLine("'No' or 'Cancel' to Cancel");
+            Console.WriteLine("Select an option:");
+            string printInput;
+            do
+            {  
+                Console.Write("-- ");
+                printInput = Console.ReadLine().ToUpper();
+                switch(printInput)
+                {
+                    case "YES":
+                        File.Create("IndividualCustomerRentals.txt").Close();
+                        using(StreamWriter sw = File.CreateText("IndividualCustomerRentals.txt"))
+                        {
+                            sw.WriteLine("Individual Customer Rentals:");
+                            if(lines.Length != 0)
+                            {
+                                foreach (string line in lines)
+                                {
+                                    string[] transactionInfo = line.Split('#');
+                                    if(transactionInfo[3] == customerEmailInput)
+                                    {
+                                        searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(transactionInfo[1]));
+                                        sw.WriteLine(myBooks[searchIndex]);
+                                    }
+                                }
+                            }
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("IndividualCustomerRentals.TXT has been created");
+                        break;
+                    case "NO":
+                        return;
+                    case "CANCEL":
+                        return;
+                    default:
+                        Console.WriteLine("Error: Invalid Selection");
+                        break;
+                }
+
+            } while (printInput != "YES" && printInput != "NO" && printInput != "CANCEL");
         }
+        // This is the extra method I did, this one prints out a table relatively
+        // similar to the other/individual Historical Rentals. This one instead
+        // breaks each section down by the overall genre of the book, and prints
+        // the amount of rentals per month by year, as well the total overall. 
         private void HistoricalGenre(BooksUtility booksUtility, Books[] myBooks)
         {
             SortedDictionary<string, SortedDictionary<int, int[]>> dictionary = new SortedDictionary<string, SortedDictionary<int, int[]>>();
@@ -500,8 +553,63 @@ namespace pleasework
                 }
                 Console.WriteLine();
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Would you like to print this information to a file?");
+            Console.WriteLine("'Yes' to Create New File");
+            Console.WriteLine("'No' or 'Cancel' to Cancel");
+            Console.WriteLine("Select an option:");
+            string printInput;
+            do
+            {  
+                Console.Write("-- ");
+                printInput = Console.ReadLine().ToUpper();
+                switch(printInput)
+                {
+                    case "YES":
+                        File.Create("HistoricalGenre.txt").Close();
+                        using(StreamWriter sw = File.CreateText("HistoricalGenre.txt"))
+                        {
+                            sw.WriteLine("Historical Genre Report");
+                            sw.WriteLine();
+                            foreach(var genre in dictionary)
+                            {
+                                sw.WriteLine(genre.Key);
+                                sw.WriteLine("    \t\t"+String.Join('\t', monthNames));
+                                sw.WriteLine(new String('-', 110));
+                                foreach(var year in genre.Value)
+                                {
+                                    sw.Write("    \t" + year.Key + "\t");
+                                    int total = 0;
+                                    foreach(var month in year.Value)
+                                    {
+                                        sw.Write(String.Format("{0,2}", month) + "\t");
+                                        total += month;
+                                    }
+                                    sw.WriteLine();
+                                    sw.WriteLine(new String('-', 110));
+                                    sw.WriteLine("    \tTotal" + String.Format("{0,93}", total));
+                                    sw.WriteLine();
+                                }
+                                Console.WriteLine();
+                            }
+                        }
+                        Console.WriteLine("HistoricalGenre.TXT has been created");
+                        break;
+                    case "NO":
+                        return;
+                    case "CANCEL":
+                        return;
+                    default:
+                        Console.WriteLine("Error: Invalid Selection");
+                        break;
+                }
+
+            } while (printInput != "YES" && printInput != "NO" && printInput != "CANCEL");
         }
 
+        // This was the most basic of all the functions, this one in particular prints
+        // out only the totals by the month and year. 
         private void TotalMonthYear(BooksUtility booksUtility, Books[] myBooks)
         {
             
@@ -550,7 +658,60 @@ namespace pleasework
                 Console.Write("\t");
                 Console.WriteLine(String.Join('\t', months));
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Would you like to print this information to a file?");
+            Console.WriteLine("'Yes' to Create New File");
+            Console.WriteLine("'No' or 'Cancel' to Cancel");
+            Console.WriteLine("Select an option:");
+            string printInput;
+            do
+            {  
+                Console.Write("-- ");
+                printInput = Console.ReadLine().ToUpper();
+                switch(printInput)
+                {
+                    case "YES":
+                        File.Create("TotalRentalsMonthYear.txt").Close();
+                        using(StreamWriter sw = File.CreateText("TotalRentalsMonthYear.txt"))
+                        {
+                            sw.WriteLine("Total Rentals by Month and Year");
+                            sw.WriteLine(new String('-', 100));
+                            sw.WriteLine("    \t"+String.Join('\t', monthNames));
+                            sw.WriteLine(new String('-', 100));
+
+                            foreach(var key in years)
+                            {
+                                string[] months = new string[12];
+                                int index = 0;
+                                foreach(var month in key.Value)
+                                {
+                                    months[index] = ($"{Convert.ToString(month):00}");
+                                    index++;
+                                }
+                                sw.Write(key.Key);
+                                sw.Write("\t");
+                                sw.WriteLine(String.Join('\t', months));
+                            }
+                        }
+                        Console.WriteLine("TotalRentalsMonthYear.txt has been created");
+                        break;
+                    case "NO":
+                        return;
+                    case "CANCEL":
+                        return;
+                    default:
+                        Console.WriteLine("Error: Invalid Selection");
+                        break;
+                }
+
+            } while (printInput != "YES" && printInput != "NO" && printInput != "CANCEL");
         }
+
+        // This is the method for Historical Rentals, specifically by every book
+        // followed by every person that rented the book, followed with when
+        // they rented the book, as well as how many copies of the book they rented
+        // and how many times it has been rented in total
         private void HistoricalRentals(BooksUtility booksUtility, Books[] myBooks)
         {
             SortedDictionary<string, SortedDictionary<string, SortedDictionary<string, int>>> dictionary = new SortedDictionary<string, SortedDictionary<string, SortedDictionary<string, int>>>();
@@ -612,6 +773,58 @@ namespace pleasework
                     Console.WriteLine("\t\t          \t\t" + String.Format("{0,2}", total));
                 }
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Would you like to print this information to a file?");
+            Console.WriteLine("'Yes' to Create New File");
+            Console.WriteLine("'No' or 'Cancel' to Cancel");
+            Console.WriteLine("Select an option:");
+            string printInput;
+            do
+            {  
+                Console.Write("-- ");
+                printInput = Console.ReadLine().ToUpper();
+                switch(printInput)
+                {
+                    case "YES":
+                        File.Create("HistoricalCustomerRentals.txt").Close();
+                        using(StreamWriter sw = File.CreateText("HistoricalCustomerRentals.txt"))
+                        {
+                            sw.WriteLine("Historical Customer Rentals");
+                            sw.WriteLine(new String('-', 50));
+                            foreach(var book in dictionary)
+                            {
+                                int isbnIndex = booksUtility.SequentialSearch(Convert.ToDouble(book.Key));
+                                sw.WriteLine(myBooks[isbnIndex].GetTitle());
+                                foreach(var customer in book.Value)
+                                {
+                                    sw.WriteLine("\t" + customer.Key);
+                                    int total = 0;
+                                    foreach(var date in customer.Value)
+                                    {
+                                        sw.WriteLine($"\t\t{date.Key}\t\t" + String.Format("{0,2}", date.Value));
+                                        total++;
+                                    }
+                                    sw.WriteLine(new String('-', 50));
+                                    sw.WriteLine("\t\t          \t\t" + String.Format("{0,2}", total));
+                                }
+                            }
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("HistoricalCustomerRentals.txt has been created");
+                        break;
+                    case "NO":
+                        return;
+                    case "CANCEL":
+                        return;
+                    default:
+                        Console.WriteLine("Error: Invalid Selection");
+                        break;
+                }
+
+            } while (printInput != "YES" && printInput != "NO" && printInput != "CANCEL");
+
+            
         }
     }
 }

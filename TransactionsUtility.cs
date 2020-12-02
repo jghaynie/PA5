@@ -24,6 +24,7 @@ namespace pleasework
             return myTransactions;
         }
 
+        // method for a sequential search for a specific search value
         public int SequentialSearch(string searchValue)
         {
             int foundIndex = -1;
@@ -38,6 +39,7 @@ namespace pleasework
             return foundIndex;
         }
 
+        // I didn't end up using this, but this sorts the array based on the ISBN
         public void SortArray()
         {
             for(int i=0;i<Transactions.GetCount()-1;i++)
