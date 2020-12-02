@@ -428,37 +428,6 @@ namespace pleasework
                 }
             }
         }
-        private void HistoricalRentals(BooksUtility booksUtility, Books[] myBooks)
-        {
-            string customerEmailInput = "";
-            int searchIndex = 0;
-
-            Console.WriteLine("Enter email address:");
-            Console.WriteLine("'Cancel' to Cancel");
-            Console.Write("-- ");
-            customerEmailInput = Console.ReadLine();
-
-            if (customerEmailInput.ToUpper() == "CANCEL")
-            {
-                return;
-            }
-            
-            Console.WriteLine();
-            Console.WriteLine("Individual Customer Rentals:");
-            string[] lines = File.ReadAllLines("transactions.txt");
-            if(lines.Length != 0)
-            {
-                foreach (string line in lines)
-                {
-                    string[] transactionInfo = line.Split('#');
-                    if(transactionInfo[3] == customerEmailInput)
-                    {
-                        searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(transactionInfo[1]));
-                        Console.WriteLine(myBooks[searchIndex]);
-                    }
-                }
-            }
-        }
         private void HistoricalGenre(BooksUtility booksUtility, Books[] myBooks)
         {
             string customerEmailInput = "";
@@ -491,12 +460,6 @@ namespace pleasework
             }
         }
 
-        class TotalRental
-        {
-            int[] months = new int[12];
-            string year;
-
-        }
         private void TotalMonthYear(BooksUtility booksUtility, Books[] myBooks)
         {
             
@@ -545,7 +508,68 @@ namespace pleasework
                 Console.Write("\t");
                 Console.WriteLine(String.Join('\t', months));
             }
+        }
+        private void HistoricalRentals(BooksUtility booksUtility, Books[] myBooks)
+        {
+            SortedDictionary<string, SortedDictionary<string, SortedDictionary<string, int>>> dictionary = new SortedDictionary<string, SortedDictionary<string, SortedDictionary<string, int>>>();
+            
+            string[] lines = File.ReadAllLines("transactions.txt");
+            if(lines.Length != 0)
+            {
+                foreach (string line in lines)
+                {
+                    string[] transactionInfo = line.Split('#');
+                    string book = transactionInfo[1];
+                    string customer =  transactionInfo[2];
+                    string date = transactionInfo[4];
+                    SortedDictionary<string, SortedDictionary<string, int>> books;
+                    if(!dictionary.ContainsKey(book))
+                    {
+                        books = new SortedDictionary<string, SortedDictionary<string, int>>();
+                        dictionary[book] = books;
+                    }
+                    else
+                    {
+                        books = dictionary[book];
+                    }
+                    SortedDictionary<string, int> customers;
+                    if(!books.ContainsKey(customer))
+                    {
+                        customers = new SortedDictionary<string, int>();
+                        books[customer] = customers;
+                    }
+                    else
+                    {
+                        customers = books[customer];
+                    }
+                    if (!customers.ContainsKey(date))
+                    {
+                        customers[date] = 0;
+                    }
+                    customers[date] += 1;
+                }
+            }
 
+            Console.Clear();
+            Console.WriteLine("Historical Customer Rentals");
+            Console.WriteLine(new String('-', 50));
+            foreach(var book in dictionary)
+            {
+                int isbnIndex = booksUtility.SequentialSearch(Convert.ToDouble(book.Key));
+                Console.WriteLine(myBooks[isbnIndex].GetTitle());
+                foreach(var customer in book.Value)
+                {
+                    Console.WriteLine("\t" + customer.Key);
+                    int total = 0;
+                    foreach(var date in customer.Value)
+                    {
+                        Console.WriteLine($"\t\t{date.Key}\t\t" + String.Format("{0,2}", date.Value));
+                        total++;
+                    }
+                    Console.WriteLine(new String('-', 50));
+                    Console.WriteLine("\t\t          \t\t" + String.Format("{0,2}", total));
+                }
+            }
         }
     }
 }
