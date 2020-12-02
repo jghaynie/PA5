@@ -34,7 +34,7 @@ namespace pleasework
             foreach (string line in input)
             {
                 string[] transactionInfo = line.Split('#');
-                myTransactions[Transactions.GetCount()] = new Transactions(double.Parse(transactionInfo[0]), double.Parse(transactionInfo[1]), transactionInfo[2], transactionInfo[3], transactionInfo[4], transactionInfo[5]);
+                myTransactions[Transactions.GetCount()] = new Transactions(double.Parse(transactionInfo[0]), transactionInfo[1], transactionInfo[2], transactionInfo[3], transactionInfo[4], transactionInfo[5]);
                 Transactions.IncCount();
             }
             inFile.Close();
@@ -61,6 +61,7 @@ namespace pleasework
             double isbnDoubleInput = 0;
             int searchIndex = 0;
             int transactionLength = File.ReadAllLines("transactions.txt").Length;
+            double rentalId = transactionLength+1;
             DateTime currentDate = DateTime.Today;
 
             Console.WriteLine();
@@ -97,14 +98,47 @@ namespace pleasework
                         Console.Clear();
                     }
                 }
+
+                if (myBooks[searchIndex].GetCopies() == 0)
+                {
+                    Console.WriteLine("Error: There are no copies left");
+                    return myTransactions;
+                }
+
+                Console.WriteLine("Checking out:");
+                Console.WriteLine($"Rental ID: {rentalId:0000}");
+                Console.WriteLine($"Title: {myBooks[searchIndex].GetTitle()}");
+                Console.WriteLine();
+
+                Console.WriteLine("Enter Customer Email:");
+                Console.WriteLine("'Cancel' to Cancel");
+                Console.Write("-- ");
+                customerEmailInput = Console.ReadLine();
+                
+                if (customerEmailInput.ToUpper() == "CANCEL")
+                {
+                    return myTransactions;
+                }
+
+                string[] lines = File.ReadAllLines("transactions.txt");
+                if(lines.Length != 0)
+                {
+                    foreach (string line in lines)
+                    {
+                        string[] transactionInfo = line.Split('#');
+                        if(transactionInfo[3] == customerEmailInput)
+                        {
+                            if(transactionInfo[1] == isbnInput)
+                            {   
+                                Console.WriteLine();
+                                Console.WriteLine("Error: You already have a copy of this book");
+                                return myTransactions; 
+                            }
+                        }
+                    }
+                }
+
             } while (isbnInput.ToUpper() != "CANCEL" && isbnInput.Length != 10);
-
-            double rentalId = transactionLength+1;
-
-            Console.WriteLine("Checking out:");
-            Console.WriteLine($"Rental ID: {rentalId:0000}");
-            Console.WriteLine($"Title: {myBooks[searchIndex].GetTitle()}");
-            Console.WriteLine();
 
             Console.WriteLine("Enter Customer Name:");
             Console.WriteLine("'Cancel' to Cancel");
@@ -123,25 +157,17 @@ namespace pleasework
             Console.WriteLine($"Customer Name: {customerNameInput}");
             Console.WriteLine();
 
-            Console.WriteLine("Enter Customer Email:");
-            Console.WriteLine("'Cancel' to Cancel");
-            Console.Write("-- ");
-            customerEmailInput = Console.ReadLine();
             
-            if (customerEmailInput.ToUpper() == "CANCEL")
-            {
-                return myTransactions;
-            }
 
-            Console.Clear();
-            Console.WriteLine("Checking out:");
-            Console.WriteLine($"Rental ID: {rentalId:0000}");
-            Console.WriteLine($"Title: {myBooks[searchIndex].GetTitle()}");
-            Console.WriteLine($"Customer Name: {customerNameInput}");
-            Console.WriteLine($"Customer Email: {customerEmailInput}");
-            Console.WriteLine($"Rental Date: {currentDate:d}");
-            Console.WriteLine($"Return Date: {defaultReturnDate}");
-            Console.WriteLine();
+            // Console.Clear();
+            // Console.WriteLine("Checking out:");
+            // Console.WriteLine($"Rental ID: {rentalId:0000}");
+            // Console.WriteLine($"Title: {myBooks[searchIndex].GetTitle()}");
+            // Console.WriteLine($"Customer Name: {customerNameInput}");
+            // Console.WriteLine($"Customer Email: {customerEmailInput}");
+            // Console.WriteLine($"Rental Date: {currentDate:d}");
+            // Console.WriteLine($"Return Date: {defaultReturnDate}");
+            // Console.WriteLine();
 
             Console.WriteLine("'Confirm' to Change");
             Console.WriteLine("'Cancel' to Cancel Change");
@@ -195,7 +221,7 @@ namespace pleasework
             string confirmInput = "";
             int searchIndex = 0;
             int searchIndexTransaction = 0;
-            int intTest = 0;
+            double doubleTest = 0;
             int transactionFileLength = myTransactions.Length;
             DateTime currentTime = DateTime.Today;
 
@@ -223,30 +249,29 @@ namespace pleasework
                     if(transactionInfo[3] == customerEmailInput)
                     {
                         if(transactionInfo[5] == "0/0/0000")
-                        {
+                        {   
+                            // Console.WriteLine(Convert.ToDouble(transactionInfo[1]));
                             searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(transactionInfo[1]));
+                            // Console.WriteLine(searchIndex);
                             Console.WriteLine(myBooks[searchIndex]);
-                        }
-                        else if(transactionInfo[5] != "0/0/0000")
-                        {
                             otherRentalCount++;
+                            testRentalCount++;    
                         }
                     }
                 }
-                foreach (string line in lines)
-                {
-                    string[] transactionInfo = line.Split('#');
-                    if(transactionInfo[5] != "0/0/0000")
-                    {
-                        testRentalCount++;
-                    }
-                }
+                // foreach (string line in lines)
+                // {
+                //     string[] transactionInfo = line.Split('#');
+                //     if(transactionInfo[5] != "0/0/0000")
+                //     {
+                //     }
+                // }
                 if (testRentalCount == 0)
                 {
                     Console.WriteLine("Error: There are no books that need to be returned");
                     return myTransactions;
                 }
-                if (otherRentalCount != 0)
+                if (otherRentalCount == 0)
                 {
                     Console.WriteLine("Error: There are no books checked out under this email");
                     return myTransactions;
@@ -269,17 +294,15 @@ namespace pleasework
                     return myTransactions;
                 }
 
-                if (!int.TryParse(isbnInput, out intTest))
+
+
+                if (!double.TryParse(isbnInput, out doubleTest))
                 {
                     Console.WriteLine($"Error: {isbnInput} is not a number, Try Again:");
                 }
-            } while (!int.TryParse(isbnInput, out intTest));  
+            } while (!double.TryParse(isbnInput, out doubleTest));  
 
             searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(isbnInput));
-            // myBooks = booksFile.GetAllBooks();
-
-            // int searchIndexTransaction = transactionsUtility.SequentialSearch(Convert.ToDouble(isbnInput));
-            // myTransactions = transactionsFile.GetAllTransactions();
 
             Console.WriteLine();
             Console.WriteLine($"Customer Email: {customerEmailInput}");
@@ -296,18 +319,6 @@ namespace pleasework
                 switch(confirmInput.ToUpper())
                 {
                     case "RETURN":
-                        // int transactionFileLength2 = File.ReadAllLines("transactions.txt").Length;
-                        // string[] tempTransactionsFile = File.ReadAllLines("transactions.txt");
-                        // myTransactions[searchIndexTransaction].SetReturnDate(currentTime.ToString());
-                        // tempTransactionsFile[searchIndexTransaction]=($"{myTransactions[searchIndexTransaction].GetRentalId()}#{myTransactions[searchIndexTransaction].GetIsbn()}#{myTransactions[searchIndexTransaction].GetCustomerName()}#{myTransactions[searchIndexTransaction].GetCustomerEmail()}#{myTransactions[searchIndexTransaction].GetRentalDate()}#{myTransactions[searchIndexTransaction].GetReturnDate()}");
-                        // File.Create("transactions.txdt").Close();
-                        // using (StreamWriter sw = File.AppendText("transactions.txt"))
-                        // {
-                        //     for (int i = 0; i!= transactionFileLength2; i++)
-                        //     {
-                        //         sw.WriteLine(tempTransactionsFile[i]);
-                        //     }
-                        // }
                         
                         string[] newLines = File.ReadAllLines("transactions.txt");
                         if(newLines.Length != 0)
@@ -317,15 +328,13 @@ namespace pleasework
                                 string[] transactionInfo = line.Split('#');
                                 if(transactionInfo[1] == isbnInput)
                                 {
-                                    // myTransactions = transactionsFile.GetAllTransactions();
                                     if(transactionInfo[5] == "0/0/0000")
                                     {
-                                        searchIndexTransaction = transactionsUtility.SequentialSearch(Convert.ToDouble(isbnInput));
-                                        Console.WriteLine(searchIndexTransaction);
+                                        searchIndexTransaction = transactionsUtility.SequentialSearch(isbnInput);
                                         myTransactions[searchIndexTransaction].SetReturnDate(currentTime.ToString());
                                         transactionFileLength = File.ReadAllLines("transactions.txt").Length;
                                         string[] transactionFile = File.ReadAllLines("transactions.txt");
-                                        transactionFile[searchIndex] = ($"{myTransactions[searchIndexTransaction].GetRentalId():0000}#{myTransactions[searchIndexTransaction].GetIsbn()}#{myTransactions[searchIndexTransaction].GetCustomerName()}#{myTransactions[searchIndexTransaction].GetCustomerEmail()}#{myTransactions[searchIndexTransaction].GetRentalDate()}#{myTransactions[searchIndexTransaction].GetReturnDate()}");
+                                        transactionFile[searchIndexTransaction] = ($"{myTransactions[searchIndexTransaction].GetRentalId():0000}#{myTransactions[searchIndexTransaction].GetIsbn()}#{myTransactions[searchIndexTransaction].GetCustomerName()}#{myTransactions[searchIndexTransaction].GetCustomerEmail()}#{myTransactions[searchIndexTransaction].GetRentalDate()}#{myTransactions[searchIndexTransaction].GetReturnDate()}");
                                         File.Create("transactions.txt").Close();
 
                                         using (StreamWriter sw = File.AppendText("transactions.txt"))

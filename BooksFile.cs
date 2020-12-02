@@ -69,15 +69,17 @@ namespace pleasework
                     return myBooks;
                 }
 
-                // ISBN Error Handling messages
-                if (isbnInput.Length != 10)
-                {
-                    if (!int.TryParse(isbnInput, out intTest))
+                if (!int.TryParse(isbnInput, out intTest))
                     {
                         Console.Clear();
                         Console.WriteLine($"Error: '{isbnInput}' is not a number, Try Again.");
+                        continue;
                     }
-                    else if (isbnInput.Length < 10)
+
+                // ISBN Error Handling messages
+                if (isbnInput.Length != 10)
+                {
+                    if (isbnInput.Length < 10)
                     {
                         Console.Clear();
                         Console.WriteLine($"Error: '{isbnInput}' is less than 10 digits, Try Again.");

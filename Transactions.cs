@@ -8,7 +8,7 @@ namespace pleasework
     public class Transactions
     {
         private double rentalId;
-        private double isbn;
+        private string isbn;
         private string customerName;
         private string customerEmail;
         private string rentalDate;
@@ -17,7 +17,7 @@ namespace pleasework
 
         public Transactions() {}
 
-        public Transactions(double rentalId, double isbn, string customerName, string customerEmail, string rentalDate, string returnDate)
+        public Transactions(double rentalId, string isbn, string customerName, string customerEmail, string rentalDate, string returnDate)
         {
             this.rentalId = rentalId;
             this.isbn = isbn;
@@ -37,12 +37,12 @@ namespace pleasework
             return rentalId;
         }
 
-        public void SetIsbn(double isbn)
+        public void SetIsbn(string isbn)
         {
             this.isbn = isbn;
         }
 
-        public double GetIsbn()
+        public string GetIsbn()
         {
             return isbn;
         }
@@ -79,13 +79,15 @@ namespace pleasework
 
         public void SetReturnDate(string returnDate)
         {
-            
             this.returnDate = returnDate;
         }
 
         public string GetReturnDate()
         {
-            
+            if (returnDate == "0/0/0000")
+            {
+                return returnDate;
+            }
             return Convert.ToDateTime(returnDate).ToString("d");
         }
 
@@ -119,7 +121,7 @@ namespace pleasework
             return this.isbn == tempTransactions.GetIsbn();
         }
 
-        public bool Equals(double tempIsbn)
+        public bool Equals(string tempIsbn)
         {
             return this.isbn == tempIsbn;
         }

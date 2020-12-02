@@ -24,13 +24,12 @@ namespace pleasework
             return myTransactions;
         }
 
-        public int SequentialSearch(double searchValue)
+        public int SequentialSearch(string searchValue)
         {
             int foundIndex = -1;
             for(int i=0;i<Transactions.GetCount();i++)
             {
-                Console.WriteLine(this.myTransactions[0]);
-                if(this.myTransactions[i].Equals(searchValue))
+                if(myTransactions[i].Equals(searchValue))
                 {
                     foundIndex = i;
                     break;
@@ -46,7 +45,7 @@ namespace pleasework
                 int minIndex = i;
                 for(int j=i+1;j<Transactions.GetCount();j++)
                 {
-                    if(myTransactions[minIndex].CompareTo(myTransactions[j]) > 0)
+                    if(this.myTransactions[minIndex].CompareTo(myTransactions[j]) > 0)
                     {
                         minIndex = j;
                     }
