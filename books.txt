@@ -1,0 +1,14 @@
+0865173054#BookTitle1#BookAuthor1#BookGenre1#23#2
+1111111111#Faust#Goethe#Fiction#90#1
+2222222222#Harry Potter and the Sorcerer's Stone#J.K. Rowling#120#120#1
+3333333333#Test Book#Jared#Non-Fiction#90#2
+1234567890#Test Title#Mady#Fiction#90#2
+1234567890#Test Title#Test Author#Test Genre#90#2
+1234567890#TestTitle#TestAuthor#GENRE#90#2
+1222222222#Test2#TestAuthor2#TestGenre2#29#2
+1231231239#TestTitle2#TestAuthor2#TestGenre2#20#2
+1231231239#TestTitleTest#TestAUthorTest#TestGenreTest#11#2
+1112222333#TestbookPlease#PleaseWorKAuthor#PleaseWorkGenre#22#11
+3333321321#PleaseTitle#PleaseAuthor#PleaseGenre#223#2
+8888888888#PleaseATitle#AuthorPlease#PleaseGenre#99#6
+8909876543#TestTitleToday#TestAuthorToday#TestGenreToday#90#1
