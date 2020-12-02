@@ -500,7 +500,7 @@ namespace pleasework
         private void TotalMonthYear(BooksUtility booksUtility, Books[] myBooks)
         {
             
-            Dictionary<string, int[]> years = new Dictionary<string, int[]>();
+            SortedDictionary<int, int[]> years = new SortedDictionary<int, int[]>();
 
             string[] lines = File.ReadAllLines("transactions.txt");
             if(lines.Length != 0)
@@ -511,7 +511,7 @@ namespace pleasework
                     string date = transactionInfo[5];
                     if (date != "0/0/0000")
                     {
-                        string year = date.Split('/')[2];
+                        int year = int.Parse(date.Split('/')[2]);
                         int[] months;
                         if (!years.ContainsKey(year))
                         {
@@ -520,7 +520,7 @@ namespace pleasework
                         }
                         months = years[year];
                         int month = int.Parse(date.Split('/')[0]);
-                        years[year][month] += 1;
+                        years[year][month-1] += 1;
                     }
                 }
             }
