@@ -430,33 +430,66 @@ namespace pleasework
         }
         private void HistoricalGenre(BooksUtility booksUtility, Books[] myBooks)
         {
-            string customerEmailInput = "";
-            int searchIndex = 0;
-
-            Console.WriteLine("Enter email address:");
-            Console.WriteLine("'Cancel' to Cancel");
-            Console.Write("-- ");
-            customerEmailInput = Console.ReadLine();
-
-            if (customerEmailInput.ToUpper() == "CANCEL")
-            {
-                return;
-            }
+            SortedDictionary<string, SortedDictionary<int, int[]>> dictionary = new SortedDictionary<string, SortedDictionary<int, int[]>>();
             
-            Console.WriteLine();
-            Console.WriteLine("Individual Customer Rentals:");
             string[] lines = File.ReadAllLines("transactions.txt");
             if(lines.Length != 0)
             {
                 foreach (string line in lines)
                 {
                     string[] transactionInfo = line.Split('#');
-                    if(transactionInfo[3] == customerEmailInput)
+                    string book = transactionInfo[1];
+                    string date = transactionInfo[4];
+                    int isbnIndex = booksUtility.SequentialSearch(Convert.ToDouble(book));
+                    string genre = myBooks[isbnIndex].GetGenre();
+                    string[] dates = date.Split('/');
+                    int year = int.Parse(dates[2]);
+                    int month = int.Parse(dates[0]);
+                    SortedDictionary<int, int[]> genres;
+                    if(!dictionary.ContainsKey(genre))
                     {
-                        searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(transactionInfo[1]));
-                        Console.WriteLine(myBooks[searchIndex]);
+                        genres = new SortedDictionary<int, int[]>();
+                        dictionary[genre] = genres;
                     }
+                    else
+                    {
+                        genres = dictionary[genre];
+                    }
+                    SortedDictionary<int, int[]> years;
+                    if(!genres.ContainsKey(year))
+                    {
+                        years = new SortedDictionary<int, int[]>();
+                        genres[year] = new int[12];
+                    }
+                    genres[year][month-1] += 1;
                 }
+            }
+
+            string[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+            Console.Clear();
+            Console.WriteLine("Historical Genre Report");
+            Console.WriteLine();
+            foreach(var genre in dictionary)
+            {
+                Console.WriteLine(genre.Key);
+                Console.WriteLine("    \t\t"+String.Join('\t', monthNames));
+                Console.WriteLine(new String('-', 110));
+                foreach(var year in genre.Value)
+                {
+                    Console.Write("    \t" + year.Key + "\t");
+                    int total = 0;
+                    foreach(var month in year.Value)
+                    {
+                        Console.Write(String.Format("{0,2}", month) + "\t");
+                        total += month;
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine(new String('-', 110));
+                    Console.WriteLine("    \tTotal" + String.Format("{0,93}", total));
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
             }
         }
 
