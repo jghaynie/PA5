@@ -74,17 +74,19 @@ namespace pleasework
 
         public string GetRentalDate()
         {
-            return rentalDate;
+            return Convert.ToDateTime(rentalDate).ToString("d");
         }
 
         public void SetReturnDate(string returnDate)
         {
+            
             this.returnDate = returnDate;
         }
 
         public string GetReturnDate()
         {
-            return returnDate;
+            
+            return Convert.ToDateTime(returnDate).ToString("d");
         }
 
         public override string ToString()

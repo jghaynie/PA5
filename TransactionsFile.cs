@@ -189,17 +189,17 @@ namespace pleasework
 
         // return($"Rental ID: {rentalId}, ISBN: {isbn}, Customer Name: {customerName}, Customer Email: {customerEmail}, Rental Date: {rentalDate} Return Date: {returnDate}");
 
-        public Transactions[] ReturnBook()
+        public Transactions[] ReturnBook(Transactions[] myTransactions, TransactionsFile transactionsFile, TransactionsReports transactionsReports, TransactionsUtility transactionsUtility, Books[] myBooks, BooksUtility booksUtility, BooksReports booksReports)
         {
-            TransactionsFile transactionsFile = new TransactionsFile("transactions.txt");
-            Transactions[] myTransactions = transactionsFile.GetAllTransactions();
-            TransactionsReports transactionsReports = new TransactionsReports(myTransactions);
-            TransactionsUtility transactionsUtility = new TransactionsUtility(myTransactions);
+            // TransactionsFile transactionsFile = new TransactionsFile("transactions.txt");
+            // // Transactions[] myTransactions = transactionsFile.GetAllTransactions();
+            // TransactionsReports transactionsReports = new TransactionsReports(myTransactions);
+            // TransactionsUtility transactionsUtility = new TransactionsUtility(myTransactions);
 
-            BooksFile booksFile = new BooksFile("books.txt");
-            Books[] myBooks = booksFile.GetAllBooks();
-            BooksReports booksReports = new BooksReports(myBooks);
-            BooksUtility booksUtility = new BooksUtility(myBooks);
+            // BooksFile booksFile = new BooksFile("books.txt");
+            // Books[] myBooks = booksFile.GetAllBooks();
+            // BooksReports booksReports = new BooksReports(myBooks);
+            // BooksUtility booksUtility = new BooksUtility(myBooks);
 
             string customerEmailInput = "";
             string isbnInput = "";
@@ -207,7 +207,8 @@ namespace pleasework
             int searchIndex = 0;
             int searchIndexTransaction = 0;
             int intTest = 0;
-            int transactionFileLength = File.ReadAllLines("transactions.txt").Length;
+            // int transactionFileLength = File.ReadAllLines("transactions.txt").Length;
+            int transactionFileLength = myTransactions.Length;
             DateTime currentTime = DateTime.Today;
 
             Console.WriteLine("Enter email address:");
@@ -287,10 +288,10 @@ namespace pleasework
             } while (!int.TryParse(isbnInput, out intTest));  
 
             searchIndex = booksUtility.SequentialSearch(Convert.ToDouble(isbnInput));
-            myBooks = booksFile.GetAllBooks();
+            // myBooks = booksFile.GetAllBooks();
 
             // int searchIndexTransaction = transactionsUtility.SequentialSearch(Convert.ToDouble(isbnInput));
-            myTransactions = transactionsFile.GetAllTransactions();
+            // myTransactions = transactionsFile.GetAllTransactions();
 
             Console.WriteLine();
             Console.WriteLine($"Customer Email: {customerEmailInput}");
@@ -328,18 +329,18 @@ namespace pleasework
                                 string[] transactionInfo = line.Split('#');
                                 if(transactionInfo[1] == isbnInput)
                                 {
-                                    myTransactions = transactionsFile.GetAllTransactions();
+                                    // myTransactions = transactionsFile.GetAllTransactions();
                                     if(transactionInfo[5] == "0/0/0000")
                                     {
                                         searchIndexTransaction = transactionsUtility.SequentialSearch(Convert.ToDouble(isbnInput));
                                         Console.WriteLine(searchIndexTransaction);
-                                        transactionInfo[5] = currentTime.ToString();
+                                        myTransactions[searchIndexTransaction].SetReturnDate(currentTime.ToString());
                                         transactionFileLength = File.ReadAllLines("transactions.txt").Length;
                                         string[] transactionFile = File.ReadAllLines("transactions.txt");
-                                        transactionFile[searchIndex] = ($"{myTransactions[searchIndexTransaction].GetRentalId()}#{myTransactions[searchIndexTransaction].GetIsbn()}#{myTransactions[searchIndexTransaction].GetCustomerName()}#{myTransactions[searchIndexTransaction].GetCustomerEmail()}#{myTransactions[searchIndexTransaction].GetRentalDate()}#{myTransactions[searchIndexTransaction].GetReturnDate()}");
+                                        transactionFile[searchIndex] = ($"{myTransactions[searchIndexTransaction].GetRentalId():0000}#{myTransactions[searchIndexTransaction].GetIsbn()}#{myTransactions[searchIndexTransaction].GetCustomerName()}#{myTransactions[searchIndexTransaction].GetCustomerEmail()}#{myTransactions[searchIndexTransaction].GetRentalDate()}#{myTransactions[searchIndexTransaction].GetReturnDate()}");
                                         File.Create("transactions.txt").Close();
 
-                                        using (StreamWriter sw = File.AppendText("transaction.txt"))
+                                        using (StreamWriter sw = File.AppendText("transactions.txt"))
                                         {
                                             for (int i=0; i != transactionFileLength; i++)
                                             {
@@ -350,10 +351,10 @@ namespace pleasework
                                 }
                             }
                         }
-                        myTransactions = transactionsFile.GetAllTransactions();
                         Console.WriteLine();
                         Console.WriteLine("Book has been returned.");
                         Console.WriteLine($"Return Date: {myTransactions[searchIndexTransaction].GetReturnDate()}");
+                        myTransactions = transactionsFile.GetAllTransactions();
                         return myTransactions;
                     case "CANCEL":
                         return myTransactions;

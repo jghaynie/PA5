@@ -12,6 +12,7 @@ namespace pleasework
         public TransactionsUtility(Transactions[] myTransactions)
         {
             this.myTransactions = myTransactions;
+            Console.WriteLine(myTransactions[0]);
         }
 
         public void SetMyTransactions(Transactions[] myTransactions)
@@ -29,9 +30,11 @@ namespace pleasework
             int foundIndex = -1;
             for(int i=0;i<Transactions.GetCount();i++)
             {
-                if(myTransactions[i].Equals(searchValue))
+                Console.WriteLine(this.myTransactions[0]);
+                if(this.myTransactions[i].Equals(searchValue))
                 {
                     foundIndex = i;
+                    break;
                 }
             }
             return foundIndex;

@@ -298,9 +298,12 @@ namespace pleasework
                     case "D":
                         Console.Clear();
                         Console.WriteLine("[Audiobook Rental Menu - Book Returns]");
-                        transactionsFile.ReturnBook();
-                        myBooks = booksFile.GetAllBooks();
-                        myTransactions = transactionsFile.GetAllTransactions();
+                        Console.WriteLine(myTransactions[0]);
+                        myTransactions = transactionsFile.ReturnBook(myTransactions, transactionsFile, transactionsReports, transactionsUtility, myBooks, booksUtility, booksReports);
+                        transactionsUtility.SetMyTransactions(myTransactions);
+                        transactionsReports.SetMyTransactions(myTransactions);
+                        // myBooks = booksFile.GetAllBooks();
+                        // myTransactions = transactionsFile.GetAllTransactions();
                         ContinueProgram();
                         return;
                     case "E":
